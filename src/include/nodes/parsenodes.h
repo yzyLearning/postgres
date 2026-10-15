@@ -4018,6 +4018,13 @@ typedef struct CheckPointStmt
 	NodeTag		type;
 } CheckPointStmt;
 
+typedef struct HelpStmt
+{
+	pg_node_attr(nodetag_number(480))
+
+	NodeTag		type;
+} HelpStmt;
+
 /* ----------------------
  * Discard Statement
  * ----------------------

@@ -302,7 +302,7 @@ static Node *makeRecursiveViewSelect(char *relname, List *aliases, Node *query);
 		SecLabelStmt SelectStmt TransactionStmt TransactionStmtLegacy TruncateStmt
 		UnlistenStmt UpdateStmt VacuumStmt
 		VariableResetStmt VariableSetStmt VariableShowStmt
-		ViewStmt CheckPointStmt CreateConversionStmt
+		ViewStmt CheckPointStmt HelpStmt CreateConversionStmt
 		DeallocateStmt PrepareStmt ExecuteStmt
 		DropOwnedStmt ReassignOwnedStmt
 		AlterTSConfigurationStmt AlterTSDictionaryStmt
@@ -727,7 +727,7 @@ static Node *makeRecursiveViewSelect(char *relname, List *aliases, Node *query);
 
 	GENERATED GLOBAL GRANT GRANTED GREATEST GROUP_P GROUPING GROUPS
 
-	HANDLER HAVING HEADER_P HOLD HOUR_P
+	HANDLER HAVING HEADER_P HELP HOLD HOUR_P
 
 	IDENTITY_P IF_P ILIKE IMMEDIATE IMMUTABLE IMPLICIT_P IMPORT_P IN_P INCLUDE
 	INCLUDING INCREMENT INDENT INDEX INDEXES INHERIT INHERITS INITIALLY INLINE_P
@@ -1083,6 +1083,7 @@ stmt:
 			| FetchStmt
 			| GrantStmt
 			| GrantRoleStmt
+			| HelpStmt
 			| ImportForeignSchemaStmt
 			| IndexStmt
 			| InsertStmt
@@ -2035,7 +2036,16 @@ CheckPointStmt:
 					$$ = (Node *) n;
 				}
 		;
-
+		/*
+		 * Help statement
+		 */
+HelpStmt:
+			HELP
+				{
+					HelpStmt *n = makeNode(HelpStmt);
+					$$ = (Node *) n;
+				}
+		;
 
 /*****************************************************************************
  *
@@ -17795,6 +17805,7 @@ unreserved_keyword:
 			| GROUPS
 			| HANDLER
 			| HEADER_P
+			| HELP
 			| HOLD
 			| HOUR_P
 			| IDENTITY_P
@@ -18383,6 +18394,7 @@ bare_label_keyword:
 			| GROUPS
 			| HANDLER
 			| HEADER_P
+			| HELP
 			| HOLD
 			| IDENTITY_P
 			| IF_P

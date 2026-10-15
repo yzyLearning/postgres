@@ -255,6 +255,9 @@ ClassifyUtilityCommandAsReadOnly(Node *parsetree)
 				return COMMAND_IS_STRICTLY_READ_ONLY;
 			}
 
+		case T_HelpStmt:
+			return COMMAND_IS_STRICTLY_READ_ONLY;
+
 		case T_ClosePortalStmt:
 		case T_ConstraintsSetStmt:
 		case T_DeallocateStmt:
@@ -954,6 +957,10 @@ standard_ProcessUtility(PlannedStmt *pstmt,
 
 			RequestCheckpoint(CHECKPOINT_IMMEDIATE | CHECKPOINT_WAIT |
 							  (RecoveryInProgress() ? 0 : CHECKPOINT_FORCE));
+			break;
+
+		case T_HelpStmt:
+			ereport(NOTICE,(errmsg("I am making the best DBMS!")));
 			break;
 
 			/*
@@ -3012,6 +3019,10 @@ CreateCommandTag(Node *parsetree)
 			tag = CMDTAG_CHECKPOINT;
 			break;
 
+		case T_HelpStmt:
+			tag = CMDTAG_HELP;
+			break;
+
 		case T_ReindexStmt:
 			tag = CMDTAG_REINDEX;
 			break;
@@ -3711,6 +3722,10 @@ GetCommandLogLevel(Node *parsetree)
 
 		case T_AlterCollationStmt:
 			lev = LOGSTMT_DDL;
+			break;
+
+		case T_HelpStmt:
+			lev = LOGSTMT_ALL;
 			break;
 
 			/* already-planned queries */
